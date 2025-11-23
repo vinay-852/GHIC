@@ -1,0 +1,10 @@
+streamlit
+requests
+pandas
+pydantic
+sqlalchemy
+fastapi
+uvicorn
+transformers
+torch
+sentencepiece
