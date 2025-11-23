@@ -55,6 +55,33 @@ The goal is to build a **lightweight but business-grade model** for automated fi
 
 This solution uses a **hybrid embedding + similarity classification approach** with optional fine-tuning.
 
+```
+                ┌────────────────────────────────────────┐
+                │              Streamlit UI               │
+                │  - User Client (Single/Bulk)            │
+                │  - Admin Dashboard                      │
+                └──────────────────────┬──────────────────┘
+                                       │ HTTP (REST)
+                                       ▼
+                ┌────────────────────────────────────────┐
+                │              FastAPI Backend            │
+                │  /predict       – ML inference          │
+                │  /predict/bulk  – Batch processing      │
+                │  /explain       – XAI generation        │
+                │  /admin/labels  – Taxonomy mgmt         │
+                │  /feedback      – Human correction      │
+                |  more..
+                └───────────────┬───────────────┬────────┘
+                                │               │
+                                ▼               ▼
+                 ┌─────────────────────┐   ┌──────────────────────┐
+                 │     ML Engine       │   │     SQLite DB         │
+                 │  - MPNet Embedder   │   │  - Labels             │
+                 │  - Cosine Similarity│   │  - History            │
+                 │  - Qwen LLM XAI     │   │  - Feedback           │
+                 └─────────────────────┘   └──────────────────────┘
+```
+
 ### 1. Text Embeddings
 
 The model converts transaction text into vector representations capturing context and semantic similarity.
@@ -141,6 +168,49 @@ The final system provides:
 
 * **Demo / Prototype Video:**
   [https://drive.google.com/drive/folders/14xRfA45jrdaJMcK7Qr4pw3Iifvwwlii6?usp=sharing](https://drive.google.com/drive/folders/14xRfA45jrdaJMcK7Qr4pw3Iifvwwlii6?usp=sharing)
+
+---
+# ⚙️ **How to Run the Project**
+
+## **1️⃣ Install Dependencies**
+
+```bash
+pip install -r requirements.txt
+```
+
+## **2️⃣ Start FastAPI Backend**
+
+```bash
+uvicorn main:app --reload
+```
+
+Backend runs at:  
+`http://127.0.0.1:8000`
+
+## **3️⃣ Start Streamlit Frontend**
+
+```bash
+streamlit run app.py
+```
+
+UI opens at:  
+`http://localhost:8501`
+
+
+---
+
+# 📂 **Project Structure**
+
+```
+├── app.py                 # Streamlit UI
+├── main.py                # FastAPI backend
+├── ml_engine.py           # Embedding engine + LLM XAI
+├── database.py            # SQLite models + ORM
+├── schemas.py             # API schemas
+├── app_data.db            # Local DB
+├── README.md              # Documentation
+└── requirements.txt
+```
 
 ---
 
