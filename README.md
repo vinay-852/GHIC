@@ -1,403 +1,153 @@
-# 🧩 **Decode – Automated AI-Based Financial Transaction Categorisation**
+# Automated AI-Based Financial Transaction Categorisation
 
-### Team: **Decode**
+### Team: Decode
 
-**Members:**
+**Team Members:**
 
-1. Vinay Pepakayala
-    
-2. Navaneeth Kola
-    
-3. Teja Gorrepotu
-    
+* Vinay Pepakayala
+* Navaneeth Kola
+* Teja Gorrepotu
 
 ---
 
-## 🚀 **Overview**
+## 📌 Overview
 
-Modern financial applications—from personal budgeting platforms to enterprise accounting systems—depend on **accurate categorisation of raw financial transaction strings** such as:
+Modern financial applications—from budgeting tools to enterprise accounting—require intelligent classification of raw transaction text such as **“Starbucks,” “Amazon.com,” or “Shell Gas”** into meaningful budget categories like **Food & Beverages, Shopping, or Fuel**.
 
-- “Starbucks 0423”
-    
-- “UBER TRIP”
-    
-- “Amazon Marketplace”
-    
-- “Shell Fuel Pump”
-    
+Most existing solutions rely on costly external APIs, leading to:
 
-These raw descriptions must be mapped to categories such as **Dining, Transportation, Shopping, Fuel, Utilities**, etc.
+* High recurring expenses
+* Limited customization
+* Latency and reduced control
 
-Today, most companies rely heavily on **paid third-party categorisation APIs**, which introduce:
-
-- Recurring costs
-    
-- Limited customisation
-    
-- Latency
-    
-- Vendor lock-in
-    
-- Privacy concerns
-    
-
-**Decode** aims to eliminate these limitations by building a fully **in-house, AI-powered, customisable, explainable, scalable** transaction categorisation system—without depending on any external API.
+This project provides a **fully in-house, cost-effective AI system** for fast and accurate transaction classification using **embeddings, fine-tuning, and dynamic similarity-based categorisation.**
 
 ---
 
-# 🎯 **Problem Statement**
+## 🧠 Problem Statement
 
-Financial systems require scalable and accurate transaction classification to support budgeting, analytics, fraud monitoring, and financial planning. Outsourcing categorisation to external APIs introduces problems such as:
+A scalable, internal ML solution is required to:
 
-- High recurring costs
-    
-- Latency due to external calls
-    
-- Lack of adaptability to custom taxonomies
-    
-- Limited transparency
-    
-- Data privacy and compliance challenges
-    
+* Eliminate reliance on paid external categorisation APIs
+* Enable control over classification logic
+* Support evolving custom category taxonomies
+* Maintain high accuracy with real-world noisy inputs
+* Deliver explainable and auditable categorisation
 
-This project solves these challenges by developing a **standalone, high-performance ML system** that:
-
-- Classifies transactions autonomously
-    
-- Achieves business-grade accuracy
-    
-- Explains its decisions
-    
-- Allows real-time taxonomy updates
-    
-- Supports human-in-the-loop corrections
-    
-- Requires **zero third-party API usage**
-    
+The goal is to build a **lightweight but business-grade model** for automated financial transaction classification with flexibility, accuracy, and transparency.
 
 ---
 
-# 🧠 **Core Features**
+## 🏗️ Technology Stack
 
-### 🔹 **1. Embedding-Based Classification (Zero-Shot + Dynamic Labels)**
+| Component            | Technology                              |
+| -------------------- | --------------------------------------- |
+| Programming Language | Python                                  |
+| ML Model             | `all-mpnet-base-v2` sentence embeddings |
+| Frameworks           | PyTorch, Hugging Face Transformers      |
+| UI                   | Streamlit                               |
+| Storage              | Local JSON/CSV dataset                  |
+| Deployment           | Local execution / Extendable API        |
 
-Instead of using fixed classifiers, the system embeds:
+---
 
-- The **transaction text**
-    
-- All **category labels from the admin panel**
-    
+## 🧪 System Architecture
 
-...and performs **cosine similarity** to determine the closest category.
+This solution uses a **hybrid embedding + similarity classification approach** with optional fine-tuning.
+
+### 1. Text Embeddings
+
+The model converts transaction text into vector representations capturing context and semantic similarity.
+
+Example:
+
+| Raw Transaction Variants | Model Interpretation       |
+| ------------------------ | -------------------------- |
+| "Uber Ride"              | → Similar embedding        |
+| "UBR Trip"               | → Same meaning             |
+| "Taxi - Uber"            | → Categorized as Transport |
+
+---
+
+### 2. Embedding-Based Classification
+
+Each label (and its examples) is embedded and similarity-matched to transactions using **cosine similarity**.
 
 Benefits:
 
-- Add/delete categories **without retraining**
-    
-- Flexible taxonomy for enterprises
-    
-- Supports 100+ categories with constant inference cost
-    
+* No full model retraining required when categories change
+* Dynamic adaptability
+* Custom taxonomy support
 
 ---
 
-### 🔹 **2. Explainable AI (XAI)**
+### 3. Fine-Tuning with Synthetic Dataset
 
-Every prediction includes a **human-readable explanation** powered by a small LLM (Qwen2.5-0.5B):
+To improve real-world robustness, the model was fine-tuned using a custom dataset containing:
 
-> “This transaction aligns with the _Fuel_ category due to merchant semantics and transportation-related keywords.”
+* Merchant name variations
+* Spelling mistakes and noise
+* Short ambiguous descriptions
+* Edge-case financial terminology
 
----
-
-### 🔹 **3. Feedback Loop (Human-in-the-Loop Learning)**
-
-Users can mark predictions as incorrect and provide the correct label.  
-Stored as training data for **future fine-tuning**.
+This improves generalization and reduces false matches.
 
 ---
 
-### 🔹 **4. Bulk Inference Engine**
+### 4. Evaluation & Optimization
 
-Upload JSON with hundreds of transactions.  
-Outputs:
+Key enhancements include:
 
-- Predictions
-    
-- Confidence scores
-    
-- Top-3 categories
-    
-- Downloadable CSV
-    
+* Similarity thresholding for uncertainty detection
+* Confidence scoring
+* Review loop for ambiguous classifications
+* Reduced confusion between close labels (e.g., Fast Food vs Restaurants)
 
 ---
 
-### 🔹 **5. Admin Dashboard**
+## ✅ Outcome
 
-Admins can:
+The final system provides:
 
-- Add labels
-    
-- Edit labels
-    
-- Delete labels
-    
-- Bulk upload taxonomy
-    
-- Trigger simulated fine-tuning
-    
-- Swap embedding models
-    
+* High accuracy across noisy and varied transaction text
+* Scalable architecture supporting millions of records via vector indexing (FAISS)
+* Continuous category evolution without full retraining
+* Offline privacy-first processing
 
 ---
 
-### 🔹 **6. No External API Usage**
+## 🔐 Security & Compliance
 
-All models run locally:
-
-- **all-mpnet-base-v2** (embedding)
-    
-- **Qwen2.5-0.5B Instruct** (text explanation)
-    
-
-Ensuring:
-
-- Data privacy
-    
-- Zero recurring cost
-    
-- Offline capability
-    
+* Fully offline model → No external API calls
+* Optional transaction anonymization
+* Suitable for fintech, banking, and personal finance use cases
 
 ---
 
-# 🏗️ **System Architecture**
+## ⚙️ Scalability & Performance
 
-```
-                ┌────────────────────────────────────────┐
-                │              Streamlit UI               │
-                │  - User Client (Single/Bulk)            │
-                │  - Admin Dashboard                      │
-                └──────────────────────┬──────────────────┘
-                                       │ HTTP (REST)
-                                       ▼
-                ┌────────────────────────────────────────┐
-                │              FastAPI Backend            │
-                │  /predict       – ML inference          │
-                │  /predict/bulk  – Batch processing      │
-                │  /explain       – XAI generation        │
-                │  /admin/labels  – Taxonomy mgmt         │
-                │  /feedback      – Human correction      │
-                |  more..
-                └───────────────┬───────────────┬────────┘
-                                │               │
-                                ▼               ▼
-                 ┌─────────────────────┐   ┌──────────────────────┐
-                 │     ML Engine       │   │     SQLite DB         │
-                 │  - MPNet Embedder   │   │  - Labels             │
-                 │  - Cosine Similarity│   │  - History            │
-                 │  - Qwen LLM XAI     │   │  - Feedback           │
-                 └─────────────────────┘   └──────────────────────┘
-```
+* Vector search enables fast similarity matching
+* Batch processing supported
+* Caching avoids repeated embedding generation
+* FAISS recommended for large-scale deployment
 
 ---
 
-# 🧬 **Technology Stack**
+## 🎥 Demo & Source Code
 
-|Component|Technology|
-|---|---|
-|**Language**|Python|
-|**Embedding Model**|`sentence-transformers/all-mpnet-base-v2`|
-|**Explainability LLM**|Qwen/Qwen2.5-0.5B-Instruct|
-|**Frameworks**|FastAPI, Pydantic, Streamlit|
-|**ML Libraries**|PyTorch, Transformers|
-|**Database**|SQLite (SQLAlchemy ORM)|
-|**Storage**|JSON / Local dataset|
-|**Deployment**|Local execution (extendable to Docker/Cloud)|
+* **GitHub Repository:** *(private repository content placeholder)*
+
+* [https://github.com/vinay-852/GHIC](https://github.com/vinay-852/GHIC)
+
+* **Demo / Prototype Video:**
+  [https://drive.google.com/drive/folders/14xRfA45jrdaJMcK7Qr4pw3Iifvwwlii6?usp=sharing](https://drive.google.com/drive/folders/14xRfA45jrdaJMcK7Qr4pw3Iifvwwlii6?usp=sharing)
 
 ---
 
-# 🔬 **AI / ML Methodology**
+## 🚀 Future Improvements
 
-### **1. Embedding-Based Zero-Shot Classification**
+* Reinforcement learning from user corrections
+* Support multilingual merchant text
+* Transaction trend forecasting and anomaly detection
+* Deployable microservice with REST API support
 
-We embed:
-
-```
-Transaction Text → Vector
-Category Label → Vector
-Cosine Similarity( text_vec , label_vec )
-```
-
-This allows:
-
-- Custom categories
-    
-- Unlimited taxonomy growth
-    
-- No retraining required
-    
-
----
-
-### **2. Synthetic Dataset Fine-Tuning**
-
-A curated synthetic dataset was created to mimic:
-
-- Misspellings
-    
-- Ambiguous short transactions
-    
-- Merchant name variations
-    
-- Category edge cases
-    
-
-> Improves robustness to noisy real-world bank statements.
-
----
-
-### **3. Confidence Scoring & Thresholding**
-
-Low confidence predictions are:
-
-- Highlighted in UI
-    
-- Pushed for manual review
-    
-- Used for future fine-tuning
-    
-
----
-
-### **4. Explainability via LLM**
-
-Each prediction generates a short natural-language explanation.
-
----
-
-# 📊 **Evaluation**
-
-The system was tested on synthetic + sourced public transaction datasets.
-
-**Metrics considered:**
-
-- Macro F1-score
-    
-- Confusion matrix
-    
-- Confidence distribution
-    
-- Error clustering (semantic misclassifications)
-    
-
-The architecture consistently showed:
-
-- **High robustness to noisy text**
-    
-- **Strong clustering of semantically similar merchants**
-    
-- **Clear separation between distant categories**
-    
-
----
-
-# 🛡️ **Security & Responsible AI**
-
-### ✔ No external API calls → ensures privacy
-
-### ✔ Local/offline inference supported
-
-### ✔ Bias Mitigation:
-
-- No sensitive attributes used
-    
-- Treats all merchants equivalently
-    
-- Human-in-loop correction reduces systemic drift
-    
-
----
-
-# ⚙️ **How to Run the Project**
-
-## **1️⃣ Install Dependencies**
-
-```bash
-pip install -r requirements.txt
-```
-
-## **2️⃣ Start FastAPI Backend**
-
-```bash
-uvicorn main:app --reload
-```
-
-Backend runs at:  
-`http://127.0.0.1:8000`
-
-## **3️⃣ Start Streamlit Frontend**
-
-```bash
-streamlit run app.py
-```
-
-UI opens at:  
-`http://localhost:8501`
-
-
----
-
-# 📂 **Project Structure**
-
-```
-├── app.py                 # Streamlit UI
-├── main.py                # FastAPI backend
-├── ml_engine.py           # Embedding engine + LLM XAI
-├── database.py            # SQLite models + ORM
-├── schemas.py             # API schemas
-├── app_data.db            # Local DB
-├── README.md              # Documentation
-└── requirements.txt
-```
-
----
-
-# 📦 **Extendability Roadmap**
-
-✔ Add FAISS vector index for large-scale search  
-✔ Add real fine-tuning pipeline with HuggingFace Trainer  
-✔ On-device model compression  
-✔ Add mobile-ready lightweight classifier  
-✔ Multi-lingual support  
-✔ Dockerization
-
----
-
-# 📹 **Demo & Repository**
-
-This section is for the submission:
-
-**GitHub Repository:** _Add your link here_  
-**Demo Video:** _https://drive.google.com/drive/folders/14xRfA45jrdaJMcK7Qr4pw3Iifvwwlii6?usp=sharing_
-
----
-
-# 🏁 **Conclusion**
-
-Decode provides a **secure, cost-effective, scalable, and fully customizable AI system** for financial transaction categorisation, delivering:
-
-- High accuracy
-    
-- Zero API dependency
-    
-- Real-time explainability
-    
-- Fine-grained admin control
-    
-- Enterprise scalability
-    
-
-A future-ready alternative to expensive third-party solutions.
-
----
